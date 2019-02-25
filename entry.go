@@ -8,6 +8,7 @@ var SpecialFields = []string{
 	"thread",
 	"message",
 	"logger",
+	"exceptions",
 }
 
 func newEntry(m *Line, specialFields []string) *Entry {
@@ -27,6 +28,7 @@ func newEntry(m *Line, specialFields []string) *Entry {
 		sorted = append(sorted, newField(k, v))
 	}
 	return &Entry{
+		rawMessage:    m.Raw,
 		fieldMap:      m.JSON,
 		sortedFields:  sorted,
 		specialFields: special,
@@ -39,6 +41,7 @@ type field struct {
 }
 
 type Entry struct {
+	rawMessage    []byte
 	fieldMap      map[string]interface{}
 	sortedFields  []*field
 	specialFields []*field

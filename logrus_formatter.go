@@ -20,7 +20,7 @@ func NewLogrusPrinter(w io.Writer) *LogrusPrinter {
 
 func (h *LogrusPrinter) Print(m *Line) {
 	if m.JSON == nil {
-		fmt.Fprintln(h.w, m.Raw)
+		fmt.Fprintln(h.w, string(m.Raw))
 		return
 	}
 	entry := newEntry(m, SpecialFields)

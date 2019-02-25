@@ -1,6 +1,7 @@
 package jl
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -46,7 +47,7 @@ func NewCompactPrinter(w io.Writer) *CompactPrinter {
 
 func (h *CompactPrinter) Print(m *Line) {
 	if m.JSON == nil {
-		fmt.Fprintln(h.w, m.Raw)
+		fmt.Fprintln(h.w, string(m.Raw))
 		return
 	}
 	entry := newEntry(m, SpecialFields)
@@ -77,12 +78,30 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 	if message, ok := entry.fieldMap["message"]; ok {
 		fmt.Fprintf(h.w, "%v ", fmt.Sprint(message))
 	}
-
-	/*	for i, field := range entry.sortedFields {
-			if i != 0 {
-				fmt.Fprint(h.w, " ")
-			}
-			fmt.Fprintf(h.w, "%s=%s", ColorText(levelColor, field.Key), field.Value)
-		}*/
+	// End the log line
 	fmt.Fprintln(h.w)
+
+	// Exceptions go after the current log line
+	if exceptions, ok := entry.fieldMap["exceptions"]; ok {
+		var java struct {
+			Exceptions []*KotlinException `json:"exceptions"`
+		}
+		if err := json.Unmarshal(entry.rawMessage, &java); err != nil {
+			fmt.Println(err)
+			fmt.Fprintln(h.w, "\t", exceptions)
+		}
+		for i, e := range java.Exceptions {
+			fmt.Fprint(h.w, "  ")
+			if i != 0 {
+				fmt.Fprint(h.w, "Caused by: ")
+			}
+			fmt.Fprintf(h.w, "%s.%s: %s\n", e.Module, e.Type, e.Message)
+			for _, stack := range e.StackTrace {
+				fmt.Fprintf(h.w, "    at %s.%s(%s.%d)\n", stack.Module, stack.Func, stack.File, stack.Line)
+			}
+			if e.FramesOmitted > 0 {
+				fmt.Fprintf(h.w, "    %d ...frames omitted...\n", e.FramesOmitted)
+			}
+		}
+	}
 }

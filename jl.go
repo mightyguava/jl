@@ -27,11 +27,12 @@ func NewParser(r io.Reader, h EntryPrinter) *Parser {
 func (p *Parser) Consume() error {
 	s := p.scan
 	for s.Scan() {
+		raw := s.Bytes()
 		var data map[string]interface{}
-		_ = json.Unmarshal(s.Bytes(), &data)
+		_ = json.Unmarshal(raw, &data)
 		message := &Line{
 			JSON: data,
-			Raw:  s.Text(),
+			Raw:  raw,
 		}
 		p.h.Print(message)
 	}
@@ -44,5 +45,5 @@ type EntryPrinter interface {
 
 type Line struct {
 	JSON map[string]interface{}
-	Raw  string
+	Raw  []byte
 }
