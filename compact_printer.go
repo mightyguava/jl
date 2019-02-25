@@ -100,7 +100,7 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 				fmt.Fprintf(h.w, "    at %s.%s(%s.%d)\n", stack.Module, stack.Func, stack.File, stack.Line)
 			}
 			if e.FramesOmitted > 0 {
-				fmt.Fprintf(h.w, "    %d ...frames omitted...\n", e.FramesOmitted)
+				fmt.Fprintf(h.w, "    ...%d frames omitted...\n", e.FramesOmitted)
 			}
 		}
 	}
