@@ -20,9 +20,9 @@ func run() error {
 	var printer jl.EntryPrinter
 	switch *formatFlag {
 	case "logrus":
-		printer = jl.NewLogrusPrinter(os.Stderr)
+		printer = jl.NewLogrusPrinter(os.Stdout)
 	case "compact":
-		printer = jl.NewCompactPrinter(os.Stderr)
+		printer = jl.NewCompactPrinter(os.Stdout)
 	}
 	return jl.NewParser(os.Stdin, printer).Consume()
 }
