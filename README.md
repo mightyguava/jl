@@ -13,6 +13,7 @@ go get -u github.com/mightyguava/jl
 jl consumes from stdin and writes to stdout. To use jl, just pipe your JSON logs into jl. For example
 
 ```sh
+./build/my-app-executable | jl
 cat app-log.json | jl
 ```
 
