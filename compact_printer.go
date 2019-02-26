@@ -84,7 +84,7 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 	// Exceptions go after the current log line
 	if exceptions, ok := entry.fieldMap["exceptions"]; ok {
 		var java struct {
-			Exceptions []*KotlinException `json:"exceptions"`
+			Exceptions []*JavaException `json:"exceptions"`
 		}
 		if err := json.Unmarshal(entry.rawMessage, &java); err != nil {
 			fmt.Println(err)
