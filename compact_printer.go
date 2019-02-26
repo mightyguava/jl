@@ -71,7 +71,7 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 		loggerStr := fmt.Sprint(logger)
 		parts := strings.Split(loggerStr, ".")
 		loggerStr = parts[len(parts)-1]
-		color := h.threadColors.GetColor(loggerStr)
+		color := h.loggerColors.GetColor(loggerStr)
 		fmt.Fprint(h.w, ColorText(color, loggerStr))
 	}
 	fmt.Fprint(h.w, "| ")
