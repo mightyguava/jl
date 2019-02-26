@@ -6,19 +6,19 @@ import (
 	"log"
 )
 
-type LogrusPrinter struct {
+type LogfmtPrinter struct {
 	w   io.Writer
 	log *log.Logger
 }
 
-func NewLogrusPrinter(w io.Writer) *LogrusPrinter {
-	return &LogrusPrinter{
+func NewLogfmtPrinter(w io.Writer) *LogfmtPrinter {
+	return &LogfmtPrinter{
 		w:   w,
 		log: log.New(w, "jl/formatter", log.LstdFlags),
 	}
 }
 
-func (h *LogrusPrinter) Print(m *Line) {
+func (h *LogfmtPrinter) Print(m *Line) {
 	if m.JSON == nil {
 		fmt.Fprintln(h.w, string(m.Raw))
 		return
@@ -27,7 +27,7 @@ func (h *LogrusPrinter) Print(m *Line) {
 	h.printColored(entry)
 }
 
-func (h *LogrusPrinter) printColored(entry *Entry) {
+func (h *LogfmtPrinter) printColored(entry *Entry) {
 	levelColor := LevelColor(entry.Level())
 
 	sortedFields := append(entry.specialFields, entry.sortedFields...)
