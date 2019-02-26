@@ -58,24 +58,24 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 	levelColor := LevelColor(entry.Level())
 
 	fmt.Fprint(h.w, ColorText(levelColor, strings.ToUpper(entry.Level().String())[0:4]))
-	if timestamp, ok := entry.fieldMap["timestamp"]; ok {
+	if timestamp, ok := entry.Time(); ok {
 		fmt.Fprintf(h.w, " %v", timestamp)
 	}
-	fmt.Fprint(h.w, " ")
 	if thread, ok := entry.fieldMap["thread"]; ok {
 		text := fmt.Sprint(thread)
 		color := h.threadColors.GetColor(text)
-		fmt.Fprintf(h.w, "[%v]\t", ColorText(color, text))
+		fmt.Fprintf(h.w, " [%v]", ColorText(color, text))
 	}
 	if logger, ok := entry.fieldMap["logger"]; ok {
 		loggerStr := fmt.Sprint(logger)
 		parts := strings.Split(loggerStr, ".")
 		loggerStr = parts[len(parts)-1]
 		color := h.loggerColors.GetColor(loggerStr)
+		fmt.Fprint(h.w, "\t")
 		fmt.Fprint(h.w, ColorText(color, loggerStr))
 	}
 	fmt.Fprint(h.w, "| ")
-	if message, ok := entry.fieldMap["message"]; ok {
+	if message, ok := entry.Message(); ok {
 		fmt.Fprintf(h.w, "%v ", fmt.Sprint(message))
 	}
 	// End the log line

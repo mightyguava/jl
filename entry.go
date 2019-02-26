@@ -4,9 +4,11 @@ import "sort"
 
 var SpecialFields = []string{
 	"timestamp",
+	"time",
 	"level",
 	"thread",
 	"message",
+	"msg",
 	"logger",
 	"exceptions",
 }
@@ -56,6 +58,30 @@ func (e *Entry) Level() Level {
 		}
 	}
 	return InfoLevel
+}
+
+func (e *Entry) Time() (string, bool) {
+	if timestamp, ok := e.fieldMap["timestamp"]; ok {
+		str, ok := timestamp.(string)
+		return str, ok
+	}
+	if timestamp, ok := e.fieldMap["time"]; ok {
+		str, ok := timestamp.(string)
+		return str, ok
+	}
+	return "", false
+}
+
+func (e *Entry) Message() (string, bool) {
+	if message, ok := e.fieldMap["message"]; ok {
+		str, ok := message.(string)
+		return str, ok
+	}
+	if message, ok := e.fieldMap["msg"]; ok {
+		str, ok := message.(string)
+		return str, ok
+	}
+	return "", false
 }
 
 func newField(k string, v interface{}) *field {
