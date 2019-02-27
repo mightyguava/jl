@@ -28,6 +28,6 @@ jl currently supports 2 formatters, with plans to make the formatters customizab
 
 The default is `-format compact`, which extracts only important fields from the JSON log, like `message`, `timestamp`, `level`, colorizes and presents them in a easy to skim way. It drops un-recongized fields from the logs.
 
-The other option is `-format logrus`, which formats the JSON logs in a way that closely resembles [logrus's](https://github.com/sirupsen/logrus) text format. This option will emit all fields from each log line.
+The other option is `-format logfmt`, which formats the JSON logs in a way that closely resembles [logfmt](https://blog.codeship.com/logfmt-a-log-format-thats-easy-to-read-and-write/). This option will emit all fields from each log line.
 
 Both formatters will echo non-JSON log lines as-is.

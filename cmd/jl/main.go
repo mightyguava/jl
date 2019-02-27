@@ -15,12 +15,12 @@ func main() {
 }
 
 func run() error {
-	var formatFlag = flag.String("format", "compact", `Formatter for logs. The options are "compact" and "logrus"`)
+	var formatFlag = flag.String("format", "compact", `Formatter for logs. The options are "compact" and "logfmt"`)
 	flag.Parse()
 	var printer jl.EntryPrinter
 	switch *formatFlag {
-	case "logrus":
-		printer = jl.NewLogrusPrinter(os.Stdout)
+	case "logfmt":
+		printer = jl.NewLogfmtPrinter(os.Stdout)
 	case "compact":
 		printer = jl.NewCompactPrinter(os.Stdout)
 	}
