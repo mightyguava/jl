@@ -87,7 +87,6 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 			Exceptions []*JavaException `json:"exceptions"`
 		}
 		if err := json.Unmarshal(entry.rawMessage, &java); err != nil {
-			fmt.Println(err)
 			fmt.Fprintln(h.w, "\t", exceptions)
 		}
 		for i, e := range java.Exceptions {
@@ -101,6 +100,21 @@ func (h *CompactPrinter) printColored(entry *Entry) {
 			}
 			if e.FramesOmitted > 0 {
 				fmt.Fprintf(h.w, "    ...%d frames omitted...\n", e.FramesOmitted)
+			}
+		}
+	}
+
+	// Logrus error format
+	if errorVal, ok := entry.fieldMap["error"]; ok {
+		fmt.Fprint(h.w, "\terror: ", errorVal)
+		stack, ok := entry.fieldMap["stack"]
+		if ok {
+			stackStr, ok := stack.(string)
+			if ok {
+				// left pad with a tab
+				lines := strings.Split(stackStr, "\n")
+				stackStr = "\t" + strings.Join(lines, "\n\t")
+				fmt.Fprintln(h.w, stackStr)
 			}
 		}
 	}
