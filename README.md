@@ -2,6 +2,8 @@
 
 jl (JL) is a parser and formatter for JSON logs, making machine-readable JSON logs human readable again.
 
+![side-by-side-comparison](./examples/jl_side_by_side.jpg)
+
 ## Installing
 
 ```
@@ -17,7 +19,7 @@ jl consumes from stdin and writes to stdout. To use jl, just pipe your JSON logs
 cat app-log.json | jl
 ```
 
-jl itself doesn't support following a log stream, but since it consumes a stream, you can just use `tail`
+jl itself doesn't support following log files, but since it can consume from a pipe, you can just use `tail`
 ```sh
 tail -F app-log.json | jl
 ```
