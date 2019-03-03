@@ -47,7 +47,7 @@ that jq tries to discover and prioritize for formatting. For now, the following 
 with jq. For string fields other than `level`, only the keys matter.
 
 ### Java-like
-```
+```json
 {
   "level": "error",
   "timestamp": "2019-02-02 15:39:45",
@@ -64,7 +64,7 @@ with jq. For string fields other than `level`, only the keys matter.
 See [log_example.json](./examples/log_example.json) for a more complete example.
 
 ### Go/Logrus-like
-```
+```json
 {
   "level": "error",
   "timestamp": "2019-02-02 15:39:45",
