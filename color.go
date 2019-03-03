@@ -30,6 +30,7 @@ const (
 	HiWhite
 )
 
+// AllColors is the set of colors used by default by DefaultCompactFieldFmts for ColorSequence.
 var AllColors = []Color{
 	// Skipping black because it's invisible on dark terminal backgrounds.
 	// Skipping red because it's too prominent and means error
@@ -49,25 +50,12 @@ var AllColors = []Color{
 	HiWhite,
 }
 
+// ColorText wraps a text with ANSI escape codes to produce terminal colors.
 func ColorText(c Color, text string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", c, text)
 }
 
-func LevelColor(level Level) Color {
-	var levelColor Color
-	switch level {
-	case DebugLevel, TraceLevel:
-		levelColor = White
-	case WarnLevel:
-		levelColor = Yellow
-	case ErrorLevel, FatalLevel, PanicLevel:
-		levelColor = Red
-	default:
-		levelColor = Green
-	}
-	return levelColor
-}
-
+// LevelColors is a mapping of log level strings to colors.
 var LevelColors = map[string]Color{
 	"trace": White,
 	"debug": White,

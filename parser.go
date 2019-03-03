@@ -4,23 +4,19 @@ import (
 	"bufio"
 	"encoding/json"
 	"io"
-	"log"
-	"os"
 )
 
 type Parser struct {
-	r    io.Reader
-	scan *bufio.Scanner
-	h    EntryPrinter
-	log  *log.Logger
+	r       io.Reader
+	scan    *bufio.Scanner
+	printer EntryPrinter
 }
 
 func NewParser(r io.Reader, h EntryPrinter) *Parser {
 	return &Parser{
-		r:    r,
-		scan: bufio.NewScanner(r),
-		h:    h,
-		log:  log.New(os.Stderr, "jl/parser", log.LstdFlags),
+		r:       r,
+		scan:    bufio.NewScanner(r),
+		printer: h,
 	}
 }
 
@@ -30,20 +26,20 @@ func (p *Parser) Consume() error {
 		raw := s.Bytes()
 		var partials map[string]json.RawMessage
 		_ = json.Unmarshal(raw, &partials)
-		message := &Line{
+		message := &Entry{
 			Partials:    partials,
 			Raw:         raw,
 		}
-		p.h.Print(message)
+		p.printer.Print(message)
 	}
 	return p.scan.Err()
 }
 
 type EntryPrinter interface {
-	Print(*Line)
+	Print(*Entry)
 }
 
-type Line struct {
+type Entry struct {
 	Partials    map[string]json.RawMessage
 	Raw         []byte
 }
