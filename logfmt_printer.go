@@ -19,7 +19,7 @@ func NewLogfmtPrinter(w io.Writer) *LogfmtPrinter {
 }
 
 func (h *LogfmtPrinter) Print(m *Line) {
-	if m.JSON == nil {
+	if m.Partials == nil {
 		fmt.Fprintln(h.w, string(m.Raw))
 		return
 	}

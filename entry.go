@@ -1,6 +1,9 @@
 package jl
 
-import "sort"
+import (
+	"encoding/json"
+	"sort"
+)
 
 var SpecialFields = []string{
 	"timestamp",
@@ -17,21 +20,21 @@ func newEntry(m *Line, specialFields []string) *Entry {
 	var specialKeys = stringSet(specialFields)
 	var special, sorted []*field
 	for _, k := range SpecialFields {
-		if v, ok := m.JSON[k]; ok {
+		if v, ok := m.Partials[k]; ok {
 			special = append(special, newField(k, v))
 		}
 	}
-	var sortedKeys = sortKeys(m.JSON)
+	var sortedKeys = sortKeys(m.Partials)
 	for _, k := range sortedKeys {
 		if _, ok := specialKeys[k]; ok {
 			continue
 		}
-		v := m.JSON[k]
+		v := m.Partials[k]
 		sorted = append(sorted, newField(k, v))
 	}
 	return &Entry{
 		rawMessage:    m.Raw,
-		fieldMap:      m.JSON,
+		partials: m.Partials,
 		sortedFields:  sorted,
 		specialFields: special,
 	}
@@ -44,6 +47,7 @@ type field struct {
 
 type Entry struct {
 	rawMessage    []byte
+	partials map[string]json.RawMessage
 	fieldMap      map[string]interface{}
 	sortedFields  []*field
 	specialFields []*field
@@ -96,7 +100,7 @@ func stringSet(l []string) map[string]interface{} {
 	return m
 }
 
-func sortKeys(m map[string]interface{}) []string {
+func sortKeys(m map[string]json.RawMessage) []string {
 	keys := make([]string, len(m))
 	i := 0
 	for k := range m {

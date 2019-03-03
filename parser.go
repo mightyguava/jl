@@ -28,11 +28,11 @@ func (p *Parser) Consume() error {
 	s := p.scan
 	for s.Scan() {
 		raw := s.Bytes()
-		var data map[string]interface{}
-		_ = json.Unmarshal(raw, &data)
+		var partials map[string]json.RawMessage
+		_ = json.Unmarshal(raw, &partials)
 		message := &Line{
-			JSON: data,
-			Raw:  raw,
+			Partials:    partials,
+			Raw:         raw,
 		}
 		p.h.Print(message)
 	}
@@ -44,6 +44,6 @@ type EntryPrinter interface {
 }
 
 type Line struct {
-	JSON map[string]interface{}
-	Raw  []byte
+	Partials    map[string]json.RawMessage
+	Raw         []byte
 }

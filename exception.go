@@ -1,5 +1,7 @@
 package jl
 
+type JavaExceptions []*JavaException
+
 type JavaException struct {
 	FramesOmitted int64            `json:"frames_omitted"`
 	Message       string           `json:"message"`

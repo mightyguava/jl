@@ -1,6 +1,8 @@
 package jl
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Color int
 
@@ -30,7 +32,7 @@ const (
 
 var AllColors = []Color{
 	// Skipping black because it's invisible on dark terminal backgrounds.
-	Red,
+	// Skipping red because it's too prominent and means error
 	Green,
 	Yellow,
 	Blue,
@@ -64,4 +66,15 @@ func LevelColor(level Level) Color {
 		levelColor = Green
 	}
 	return levelColor
+}
+
+var LevelColors = map[string]Color{
+	"trace": White,
+	"debug": White,
+	"info": Green,
+	"warn": Yellow,
+	"warning": Yellow,
+	"error": Red,
+	"fatal": Red,
+	"panic": Red,
 }
