@@ -58,7 +58,7 @@ If [filename] is omitted, it reads from standard input.
 		printer = cp
 	}
 
-	fileArg := flag.Arg(1)
+	fileArg := flag.Arg(0)
 	inFile := os.Stdin
 	if fileArg != "" {
 		f, err := os.Open(fileArg)
