@@ -30,6 +30,12 @@ jl itself doesn't support following log files, but since it can consume from a p
 tail -F app-log.json | jl
 ```
 
+you can page jl's colorized output using `less` with the `-R` flag
+
+```sh
+jl my-app-log.json | less -R
+```
+
 ## Formatters
 
 jl currently supports 2 formatters, with plans to make the formatters customizable.
