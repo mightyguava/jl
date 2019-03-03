@@ -1,4 +1,4 @@
-# jl
+# jl [![GoDoc](https://godoc.org/github.com/narqo/go-badge?status.svg)](https://godoc.org/github.com/mightyguava/jl)
 
 jl (JL) is a parser and formatter for JSON logs, making machine-readable JSON logs human readable again.
 
@@ -68,7 +68,7 @@ See [log_example.json](./examples/log_example.json) for a more complete example.
 {
   "level": "error",
   "timestamp": "2019-02-02 15:39:45",
-  "message": "hello world",
+  "msg": "hello world",
   "error": "hello error",
   "stack": "\nhello\n\thello.go\nworld\n\tworld.go"
 }
