@@ -101,6 +101,11 @@ func (f *FieldFmt) format(ctx *Context, entry *Entry) string {
 	} else {
 		s = DefaultStringer(ctx, v)
 	}
+	s = strings.TrimSpace(s)
+
+	if s == "" {
+		return ""
+	}
 
 	original := s
 	ctx.Original = original
