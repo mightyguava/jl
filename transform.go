@@ -7,6 +7,16 @@ import (
 	"unicode/utf8"
 )
 
+// Context provides the current transformation context, to be used by Transformers and Stringers.
+type Context struct {
+	// The original string before any transformations were applied.
+	Original string
+	// Indicates that terminal color escape sequences should be disabled.
+	DisableColor bool
+	// Indicates that fields should not be truncated.
+	DisableTruncate bool
+}
+
 // Transformer transforms a string and returns the result.
 type Transformer interface {
 	Transform(ctx *Context, input string) string
