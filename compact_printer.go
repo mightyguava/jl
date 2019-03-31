@@ -28,6 +28,7 @@ var DefaultCompactPrinterFieldFmt = []FieldFmt{{
 	Name:         "level",
 	Transformers: []Transformer{Truncate(4), UpperCase, ColorMap(LevelColors)},
 }, {
+	Name:    "time",
 	Finders: []FieldFinder{ByNames("timestamp", "time")},
 }, {
 	Name:         "thread",
@@ -36,8 +37,10 @@ var DefaultCompactPrinterFieldFmt = []FieldFmt{{
 	Name:         "logger",
 	Transformers: []Transformer{Ellipsize(20), Format("%s|"), LeftPad(21), ColorSequence(AllColors)},
 }, {
+	Name:    "message",
 	Finders: []FieldFinder{ByNames("message", "msg")},
 }, {
+	Name:     "errors",
 	Finders:  []FieldFinder{JavaExceptionFinder, LogrusErrorFinder, ByNames("exceptions", "error")},
 	Stringer: ErrorStringer,
 }}
@@ -58,7 +61,7 @@ type CompactPrinter struct {
 // NewCompactPrinter allocates and returns a new compact printer.
 func NewCompactPrinter(w io.Writer) *CompactPrinter {
 	return &CompactPrinter{
-		Out:            w,
+		Out:          w,
 		FieldFormats: DefaultCompactPrinterFieldFmt,
 	}
 }
@@ -68,12 +71,18 @@ func (p *CompactPrinter) Print(entry *Entry) {
 		fmt.Fprintln(p.Out, string(entry.Raw))
 		return
 	}
-	for _, fieldFmt := range p.FieldFormats {
+	for i, fieldFmt := range p.FieldFormats {
 		ctx := Context{
 			DisableColor:    p.DisableColor,
 			DisableTruncate: p.DisableTruncate,
 		}
-		p.Out.Write([]byte(fieldFmt.format(&ctx, entry)))
+		formattedField := fieldFmt.format(&ctx, entry)
+		if formattedField != "" {
+			if i != 0 && !strings.HasPrefix(formattedField, "\n") {
+				p.Out.Write([]byte(" "))
+			}
+			p.Out.Write([]byte(formattedField))
+		}
 	}
 	p.Out.Write([]byte("\n"))
 }
@@ -85,6 +94,7 @@ func (f *FieldFmt) format(ctx *Context, entry *Entry) string {
 		for _, finder := range f.Finders {
 			if v = finder(entry); v != nil {
 				break
+			} else {
 			}
 		}
 	} else {
@@ -101,7 +111,7 @@ func (f *FieldFmt) format(ctx *Context, entry *Entry) string {
 	} else {
 		s = DefaultStringer(ctx, v)
 	}
-	s = strings.TrimSpace(s)
+	s = strings.TrimRightFunc(s, unicode.IsSpace)
 
 	if s == "" {
 		return ""
@@ -116,11 +126,6 @@ func (f *FieldFmt) format(ctx *Context, entry *Entry) string {
 
 	if s == "" {
 		return ""
-	}
-
-	// Add a space if needed
-	if !unicode.IsSpace(rune(s[len(s)-1])) {
-		s += " "
 	}
 
 	return s
@@ -162,7 +167,7 @@ func JavaExceptionFinder(entry *Entry) interface{} {
 	var java struct {
 		Exceptions []*JavaException `json:"exceptions"`
 	}
-	if err := json.Unmarshal(entry.Raw, &java); err == nil {
+	if err := json.Unmarshal(entry.Raw, &java); err == nil && len(java.Exceptions) > 0 {
 		return JavaExceptions(java.Exceptions)
 	}
 	return nil
@@ -200,8 +205,11 @@ func DefaultStringer(ctx *Context, v interface{}) string {
 func ErrorStringer(ctx *Context, v interface{}) string {
 	w := &bytes.Buffer{}
 	if logrusErr, ok := v.(LogrusError); ok {
+		w.WriteString("\n  ")
+		w.WriteString(logrusErr.Error)
+		w.WriteRune('\n')
 		// left pad with a tab
-		lines := strings.Split(logrusErr.Error, "\n")
+		lines := strings.Split(logrusErr.Stack, "\n")
 		stackStr := "\t" + strings.Join(lines, "\n\t")
 		w.WriteString(stackStr)
 		return w.String()
