@@ -1,4 +1,4 @@
-# jl [![GoDoc](https://godoc.org/github.com/narqo/go-badge?status.svg)](https://godoc.org/github.com/mightyguava/jl)
+# jl - JSON Log Viewer [![GoDoc](https://godoc.org/github.com/narqo/go-badge?status.svg)](https://godoc.org/github.com/mightyguava/jl) [![CircleCI](https://circleci.com/gh/mightyguava/jl/tree/master.svg?style=svg)](https://circleci.com/gh/mightyguava/jl/tree/master)
 
 jl (JL) is a parser and formatter for JSON logs, making machine-readable JSON logs human readable again.
 
