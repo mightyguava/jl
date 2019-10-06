@@ -60,11 +60,7 @@ with jq. For string fields other than `level`, only the keys matter.
   "logger": "HelloWorldService",
   "thread": "main",
   "message": "hello world",
-  "exceptions": [{
-    "module": "com.MyApp",
-    "type": "HelloException",
-    "stack_trace": [{...}]
-  }]
+  "exception": "java.lang.IllegalArgumentException: The world isn't here\n...stacktraces..."
 }
 ```
 See [log_example.json](./examples/log_example.json) for a more complete example.

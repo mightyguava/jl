@@ -34,14 +34,3 @@ func LogrusErrorFinder(entry *Entry) interface{} {
 	}
 	return LogrusError{errStr, stack}
 }
-
-// JavaExceptionFinder finds a Java exception containing a stracetrace and returns it as a JavaExceptions.
-func JavaExceptionFinder(entry *Entry) interface{} {
-	var java struct {
-		Exceptions []*JavaException `json:"exceptions"`
-	}
-	if err := json.Unmarshal(entry.Raw, &java); err == nil && len(java.Exceptions) > 0 {
-		return JavaExceptions(java.Exceptions)
-	}
-	return nil
-}

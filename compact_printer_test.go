@@ -31,16 +31,8 @@ func TestCompactPrinter_Print(t *testing.T) {
 		formatted: "INFO 2019-01-01 15:23:45 [truck-manager]    TruckRepa…ordManager| There are 7 more trucks in the garage to fix. Get to work.\n",
 	}, {
 		name: "exception",
-		json: `{"timestamp":"2019-01-01 15:34:45","level":"ERROR","thread":"repair-worker-2","logger":"TruckRepairMinion","message":"Truck 5 has is really broken! I'm need parts, waiting till they come.","exceptions":[{"frames_omitted":8,"message":"I can't do anything","module":"com.truckstop","type":"MustStandAroundException","stack_trace":[{"file":"TruckRepairMinion.java","func":"repair","line":84,"module":"com.truckstop"},{"file":"TruckRepairDepot.java","func":"makeMinionDoWork","line":1,"module":"com.truckstop"}]},{"frames_omitted":5,"message":"missing 3 parts","module":"com.truckstop","type":"MissingPartsException","stack_trace":[{"file":"TruckRepairChecklist.java","func":"checkParts","line":42,"module":"com.truckstop"},{"file":"TruckRepairMinion.java","func":"runChecklist","line":84,"module":"com.truckstop"}]}]}`,
+		json: `{"timestamp":"2019-01-01 15:34:45","level":"ERROR","thread":"repair-worker-2","logger":"TruckRepairMinion","message":"Truck 5 has is really broken! I'm need parts, waiting till they come."}`,
 		formatted: `ERRO 2019-01-01 15:34:45 [repair-worker-2]     TruckRepairMinion| Truck 5 has is really broken! I'm need parts, waiting till they come.
-  com.truckstop.MustStandAroundException: I can't do anything
-    at com.truckstop.repair(TruckRepairMinion.java:84)
-    at com.truckstop.makeMinionDoWork(TruckRepairDepot.java:1)
-    ...8 frames omitted...
-  Caused by: com.truckstop.MissingPartsException: missing 3 parts
-    at com.truckstop.checkParts(TruckRepairChecklist.java:42)
-    at com.truckstop.runChecklist(TruckRepairMinion.java:84)
-    ...5 frames omitted...
 `}, {
 		name: "logrus_pgk_error",
 		json: `{"timestamp":"2019-01-01 15:23:45","level":"error","message":"an error occurred","error":"BOOM!","stack":"github.com/pkg/errors_test.fn\n\t/home/dfc/src/github.com/pkg/errors/example_test.go:47\ngithub.com/pkg/errors_test.Example_stackTrace\n\t/home/dfc/src/github.com/pkg/errors/example_test.go:127\n"}`,

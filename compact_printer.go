@@ -52,7 +52,7 @@ var DefaultCompactPrinterFieldFmt = []FieldFmt{{
 	Finders: []FieldFinder{ByNames("message", "msg")},
 }, {
 	Name:     "errors",
-	Finders:  []FieldFinder{JavaExceptionFinder, LogrusErrorFinder, ByNames("exceptions", "error")},
+	Finders:  []FieldFinder{LogrusErrorFinder, ByNames("exceptions", "exception", "error")},
 	Stringer: ErrorStringer,
 }}
 

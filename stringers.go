@@ -34,7 +34,7 @@ func DefaultStringer(ctx *Context, v interface{}) string {
 	return s
 }
 
-// ErrorStringer stringifies LogrusError, JavaExceptions to a multiline string. If the field is neither, it falls back
+// ErrorStringer stringifies LogrusError to a multiline string. If the field is not a LogrusError, it falls back
 // to the DefaultStringer.
 func ErrorStringer(ctx *Context, v interface{}) string {
 	w := &bytes.Buffer{}
@@ -47,26 +47,7 @@ func ErrorStringer(ctx *Context, v interface{}) string {
 		stackStr := "\t" + strings.Join(lines, "\n\t")
 		w.WriteString(stackStr)
 		return w.String()
-	} else if exceptions, ok := v.(JavaExceptions); ok {
-		for i, e := range []*JavaException(exceptions) {
-			fmt.Fprint(w, "\n  ")
-			if i != 0 {
-				fmt.Fprint(w, "Caused by: ")
-			}
-			msg := e.Message
-			if !ctx.DisableColor {
-				msg = ColorText(Red, msg)
-			}
-			fmt.Fprintf(w, "%s.%s: %s", e.Module, e.Type, msg)
-			for _, stack := range e.StackTrace {
-				fmt.Fprintf(w, "\n    at %s.%s(%s:%d)", stack.Module, stack.Func, stack.File, stack.Line)
-			}
-			if e.FramesOmitted > 0 {
-				fmt.Fprintf(w, "\n    ...%d frames omitted...", e.FramesOmitted)
-			}
-		}
-		return w.String()
-	} else {
+	}  else {
 		return DefaultStringer(ctx, v)
 	}
 }
