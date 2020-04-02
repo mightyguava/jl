@@ -76,6 +76,40 @@ See [log_example.json](./examples/log_example.json) for a more complete example.
 }
 ```
 
+### Google Stackdriver
+
+Stackdriver logs require a little pre-processing from `jq`.
+
+```shell script
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=<YOUR_SERVICE>" --freshness=30m --format=json \
+  | jq -c -r 'reverse | .[]' \
+  | jl
+```
+
+```json
+{
+  "insertId": "5e864b4c000cc26666c50a3b",
+  "jsonPayload": {
+    "message": "hello world",
+    "foo": "bar"
+  },
+  "labels": {
+    "instanceId": "..."
+  },
+  "logName": "projects/<PROJECT>/logs/run.googleapis.com%2Fstderr",
+  "receiveTimestamp": "2020-04-02T20:30:05.116903175Z",
+  "resource": {
+    "labels": {
+        "location": "...",
+        "project_id": "...",
+    },
+    "type": "cloud_run_revision"
+  },
+  "severity": "INFO",
+  "timestamp": "2020-04-02T20:30:04.835224670Z"
+}
+```
+
 ## Roll your own format
 
 If the format that JL provides does not suit your needs, All of jl's functionality is available as

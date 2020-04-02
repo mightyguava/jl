@@ -2,6 +2,7 @@ package jl
 
 import (
 	"encoding/json"
+	"strings"
 )
 
 // FieldFinder locates a field in the Entry and returns it.
@@ -11,12 +12,33 @@ type FieldFinder func(entry *Entry) interface{}
 func ByNames(names ...string) FieldFinder {
 	return func(entry *Entry) interface{} {
 		for _, name := range names {
-			if v, ok := entry.Partials[name]; ok {
+			if v, ok := getDeep(entry, name); ok {
 				return v
 			}
 		}
 		return nil
 	}
+}
+
+func getDeep(entry *Entry, name string) (interface{}, bool) {
+	parts := strings.SplitN(name, ".", 2)
+	key := parts[0]
+	v, ok := entry.Partials[key]
+	if !ok {
+		return nil, false
+	}
+	if len(parts) == 1 {
+		return v, true
+	}
+	var partials map[string]json.RawMessage
+	err := json.Unmarshal(v, &partials)
+	if err != nil {
+		return nil, false
+	}
+	return getDeep(&Entry{
+		Partials: partials,
+		Raw:      v,
+	}, parts[1])
 }
 
 // LogrusErrorFinder finds logrus error in the JSON log and returns it as a LogrusError.
