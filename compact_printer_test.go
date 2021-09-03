@@ -27,16 +27,16 @@ func TestCompactPrinter_Print(t *testing.T) {
 		formatted string
 	}{{
 		name:      "basic",
-		json:      `{"timestamp":"2019-01-01 15:23:45","level":"INFO","thread":"truck-manager","logger":"TruckRepairServiceOverlordManager","message":"There are 7 more trucks in the garage to fix. Get to work."}`,
-		formatted: "INFO 2019-01-01 15:23:45 [truck-manager]    TruckRepa…ordManager| There are 7 more trucks in the garage to fix. Get to work.\n",
+		json:      `{"timestamp":"2019-01-01 15:23:45","level":"INFO","thread":"truck-manager","traceId":"123125f435d657a1","logger":"TruckRepairServiceOverlordManager","message":"There are 7 more trucks in the garage to fix. Get to work."}`,
+		formatted: "INFO  2019-01-01 15:23:45 [truck-manager]    TruckRepairServiceOverlordManager| 123125f435d657a1| There are 7 more trucks in the garage to fix. Get to work.\n",
 	}, {
 		name: "exception",
-		json: `{"timestamp":"2019-01-01 15:34:45","level":"ERROR","thread":"repair-worker-2","logger":"TruckRepairMinion","message":"Truck 5 has is really broken! I'm need parts, waiting till they come."}`,
-		formatted: `ERRO 2019-01-01 15:34:45 [repair-worker-2]     TruckRepairMinion| Truck 5 has is really broken! I'm need parts, waiting till they come.
+		json: `{"timestamp":"2019-01-01 15:34:45","level":"ERROR","thread":"repair-worker-2","traceId":"123125f435d657a1","logger":"TruckRepairMinion","message":"Truck 5 has is really broken! I'm need parts, waiting till they come."}`,
+		formatted: `ERROR 2019-01-01 15:34:45 [repair-worker-2]                   TruckRepairMinion| 123125f435d657a1| Truck 5 has is really broken! I'm need parts, waiting till they come.
 `}, {
 		name: "logrus_pgk_error",
-		json: `{"timestamp":"2019-01-01 15:23:45","level":"error","message":"an error occurred","error":"BOOM!","stack":"github.com/pkg/errors_test.fn\n\t/home/dfc/src/github.com/pkg/errors/example_test.go:47\ngithub.com/pkg/errors_test.Example_stackTrace\n\t/home/dfc/src/github.com/pkg/errors/example_test.go:127\n"}`,
-		formatted: `ERRO 2019-01-01 15:23:45 an error occurred
+		json: `{"timestamp":"2019-01-01 15:23:45","level":"error","message":"an error occurred","traceId":"123125f435d657a1","error":"BOOM!","stack":"github.com/pkg/errors_test.fn\n\t/home/dfc/src/github.com/pkg/errors/example_test.go:47\ngithub.com/pkg/errors_test.Example_stackTrace\n\t/home/dfc/src/github.com/pkg/errors/example_test.go:127\n"}`,
+		formatted: `ERROR 2019-01-01 15:23:45 123125f435d657a1| an error occurred
   BOOM!
 	github.com/pkg/errors_test.fn
 		/home/dfc/src/github.com/pkg/errors/example_test.go:47
